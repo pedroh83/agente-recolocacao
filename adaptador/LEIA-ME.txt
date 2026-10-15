@@ -1,0 +1,24 @@
+ADAPTADOR DE CURRÍCULO POR VAGA — resumo rápido
+================================================
+
+INSTALAR (uma vez só)
+1. Extraia esta pasta em C:\AgenteVagas  (fica C:\AgenteVagas\Adaptador)
+2. Dê dois cliques em instalar.bat
+3. Responda ao assistente: ele abre a página da chave do Google, pede seus
+   dados de contato e pergunta qual arquivo é o currículo A e qual é o B.
+
+USAR (toda vez que achar uma vaga)
+1. Abra a vaga no LinkedIn e clique em "Exibir mais"
+2. Selecione a descrição inteira e aperte Ctrl+C
+3. Dê dois cliques em "Adaptar Curriculo" na Área de Trabalho (ou colar_vaga.bat)
+4. A pasta "saida" abre sozinha com o currículo .docx e o relatório .txt
+
+ANTES DE ENVIAR
+ Leia os ALERTAS DE VERACIDADE no relatório e revise o .docx.
+ A IA só reorganiza o que já está nos seus currículos.
+
+OUTROS ARQUIVOS
+ testar.bat                  -> confere se está tudo configurado
+ adaptar_vagas.bat           -> processa várias vagas salvas como .txt na pasta "vagas"
+ adaptar_vagas_agendado.bat  -> mesma coisa, para o Agendador de Tarefas
+ historico.csv               -> todas as adaptações (abre no Excel)

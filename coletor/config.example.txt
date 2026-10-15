@@ -1,0 +1,18 @@
+# Configuracao do Agente de Vagas
+# Copie este arquivo para config.txt e preencha. NUNCA publique o config.txt.
+
+# Conta Gmail que recebe os alertas de vaga do LinkedIn
+email = seu-email-de-alertas@gmail.com
+
+# Senha de app de 16 letras (myaccount.google.com/apppasswords)
+# Exige a verificacao em duas etapas ativada na conta
+senha = COLE_SUA_SENHA_DE_APP_AQUI
+
+# Pasta/marcador onde os alertas chegam (INBOX = caixa de entrada)
+pasta = INBOX
+
+# Nota minima para a vaga entrar no relatorio (4 = valor calibrado)
+nota_minima = 4
+
+# Quantos dias de e-mail olhar para tras a cada execucao
+dias = 2

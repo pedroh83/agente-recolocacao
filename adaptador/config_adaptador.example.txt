@@ -1,0 +1,14 @@
+# Configuracao do Adaptador de Curriculo
+# O instalar.bat cria o config_adaptador.txt e preenche estes campos pelo assistente.
+# NUNCA publique o config_adaptador.txt: ele guarda a sua chave da API.
+
+# Chave gratuita do Google AI Studio (aistudio.google.com)
+GEMINI_API_KEY=COLE_SUA_CHAVE_AQUI
+MODELO=gemini-3.8-flash
+
+# Cabecalho do curriculo gerado
+NOME=Seu Nome
+CONTATO=Cidade - UF | (00) 00000-0000 | seu.email@exemplo.com | linkedin.com/in/SEU-PERFIL
+
+IDIOMA=português do Brasil
+PAUSA_ENTRE_VAGAS=6

@@ -1,0 +1,20 @@
+# Credenciais e configuracoes locais (NUNCA publicar)
+config.txt
+config_adaptador.txt
+.env
+
+# Dados pessoais e resultados
+curriculos_base/
+saida/
+vagas/
+*.xlsx
+*.docx
+historico.csv
+vagas_vistas.json
+registro.txt
+log_adaptador.txt
+email_*.html
+
+# Python
+__pycache__/
+*.pyc
