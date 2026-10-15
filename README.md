@@ -35,7 +35,7 @@ flowchart LR
 ### Agente 1: Coletor de Vagas
 - Roda sozinho **todos os dias às 9h** pelo Agendador de Tarefas do Windows.
 - Lê os e-mails de alerta de vagas do LinkedIn em um **Gmail dedicado**, via IMAP, sem marcá-los como lidos.
-- Extrai título, empresa, local e link de cada vaga e **descarta as já vistas** em dias anteriores.
+- Extrai título, empresa, local e link de cada vaga e **descarta as já vistas**, inclusive o mesmo anúncio publicado de novo com outro número.
 - Calcula uma **nota de compatibilidade** por palavras-chave com peso (3 para termos que definem a vaga, 1 para termos de apoio), com bônus para Salvador/BA e trabalho remoto ou híbrido. As listas ficam em `palavras_chave.txt`, editável sem mexer no código.
 - Pede uma **segunda opinião ao Gemini** sobre os títulos de nota baixa, numa única consulta por dia, para não perder cargos com nomes fora das listas.
 - Indica qual currículo enviar: **A (Qualidade & Processos)** ou **B (Requisitos & Tecnologia)**.
@@ -106,7 +106,7 @@ Uma planilha única, `controle_candidaturas.xlsx`, atualizada a cada execução 
 - Mais de **600 vagas novas** triadas entre agosto e outubro de 2026, de 5 a 15 por dia, já filtradas e ordenadas.
 - Calibragem da pontuação feita com **110 vagas reais** (agosto/2026).
 - Exemplo real de adaptação: compatibilidade estimada pela IA de **35% → 85%**.
-- **51 testes automáticos** cobrindo extração, pontuação, configuração, controle, IA e as regras de veracidade do adaptador.
+- **55 testes automáticos** cobrindo extração, pontuação, configuração, controle, IA e as regras de veracidade do adaptador.
 
 ## Documentação
 

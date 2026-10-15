@@ -33,14 +33,15 @@ def test_execucao_completa(tmp_path, monkeypatch, html_exemplo, capsys):
     assert len(planilhas) == 1
     ws = load_workbook(planilhas[0]).active
     titulos = [ws.cell(row=r, column=3).value for r in range(2, ws.max_row + 1)]
-    assert titulos == ["Analista de Processos e Melhoria Contínua", "Analista de Requisitos Sênior"]
+    assert titulos == ["Analista de Processos e Melhoria Contínua", "Analista de Requisitos Sênior",
+                       "Analista de Sistemas Sênior"]
 
     historico = json.loads((saida / "vagas_vistas.json").read_text(encoding="utf-8"))
-    assert set(historico) == {"li-1000000001", "li-1000000002"}
+    assert set(historico) == {"li-1000000001", "li-1000000002", "li-1000000006"}  # 7 = anuncio repetido
     assert historico["li-1000000001"]["nota"] == 9
 
     controle = load_workbook(saida / "controle_candidaturas.xlsx")
-    assert controle["Candidaturas"].max_row == 3
+    assert controle["Candidaturas"].max_row == 4
     assert "Agente de Vagas v1.5" in capsys.readouterr().out
 
 
@@ -77,8 +78,22 @@ def test_segunda_execucao_com_vagas_novas_nao_sobrescreve_a_da_manha(tmp_path, m
     da_manha = next(saida.glob("vagas_*.xlsx"))
     antes = da_manha.read_bytes()
     # Chega um alerta novo no mesmo dia
-    novo = html_exemplo.replace("1000000001", "2000000001").replace("1000000002", "2000000002")
+    novo = (html_exemplo.replace("1000000001", "2000000001").replace("Empresa Alfa", "Empresa Zeta")
+            .replace("1000000006", "2000000006").replace("Épsilon", "Ômega"))
     monkeypatch.setattr(agente_vagas, "ler_emails", lambda cfg, pasta, dias: [{"assunto": "A", "html": novo}])
     agente_vagas.main([])
     assert da_manha.read_bytes() == antes
     assert len(list(saida.glob("vagas_*.xlsx"))) == 2
+
+
+def test_anuncio_repetido_com_outro_numero_e_ignorado(tmp_path, monkeypatch, html_exemplo):
+    from agente_vagas import separar_novas
+    import datetime as dt
+    base = {"titulo": "Senior Functional Tester", "empresa": "EPAM Systems", "local": ""}
+    brutas = [dict(base, link=f"https://www.linkedin.com/jobs/view/{n}/") for n in (1, 2, 3)]
+    assert len(separar_novas(brutas, {}, dt.date(2026, 10, 14))) == 1
+
+    recente = {"li-9": {"data": "2026-10-01", "titulo": "Senior Functional Tester", "empresa": "EPAM Systems"}}
+    antigo = {"li-9": {"data": "2026-08-01", "titulo": "Senior Functional Tester", "empresa": "EPAM Systems"}}
+    assert separar_novas([dict(brutas[0])], recente, dt.date(2026, 10, 14)) == []
+    assert len(separar_novas([dict(brutas[0])], antigo, dt.date(2026, 10, 14))) == 1  # mais de 30 dias: vale de novo

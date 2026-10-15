@@ -3,7 +3,7 @@
 **Procedimento Operacional Padrão**
 Responsável: Pedro Henrique Simas
 Versão: 1.2 — outubro/2026
-Versão do programa: 1.5
+Versão do programa: 1.5.1
 
 ---
 
@@ -52,7 +52,8 @@ Madrugada    LinkedIn processa os alertas e envia os e-mails
              1. Conecta no Gmail e lê os e-mails dos últimos 2 dias
                 (sem marcá-los como lidos)
              2. Extrai título, empresa, local e link de cada vaga
-             3. Descarta as que já estão no histórico
+             3. Descarta as que já estão no histórico e os anúncios
+                repetidos (mesmo cargo e empresa nos últimos 30 dias)
              4. Pontua contra as palavras-chave dos currículos A e B
                 (palavras_chave.txt). Os títulos de nota baixa recebem
                 uma segunda opinião da IA (Gemini)
@@ -131,7 +132,7 @@ Todos os arquivos `.py` precisam ficar juntos na mesma pasta.
 Ao rodar, a primeira linha exibe a versão:
 
 ```
-=== Agente de Vagas v1.5 ===
+=== Agente de Vagas v1.5.1 ===
 ```
 
 Conferir sempre após uma atualização. Se o número não mudar, o arquivo antigo
@@ -434,7 +435,7 @@ Perder a senha é normal — ela é descartável.
 
 ### 9.6 Voltar para a versão anterior (1.4)
 
-Se a versão 1.5 apresentar um problema que impeça o uso:
+Se a versão 1.5.1 apresentar um problema que impeça o uso:
 
 1. Abrir `C:\AgenteVagas\backup_v1.4`
 2. Copiar `agente_vagas.py`, `diagnostico.py` e `inspecionar.py` para
@@ -472,7 +473,8 @@ módulos novos e o controle. O `config.txt` e o histórico servem para as duas.
    automáticos (8.7) ajudam a detectar e corrigir.
 3. **A pontuação é por palavra-chave**, não por compreensão do texto. A segunda
    opinião da IA (8.5) reduz esse problema para os títulos de nota baixa, mas
-   o alerta do LinkedIn traz só o título, não a descrição da vaga.
+   o alerta do LinkedIn traz só o título, não a descrição da vaga. Vagas
+   marcadas "IA" devem ser conferidas antes da candidatura.
 4. **O PC precisa estar ligado.** Se estiver desligado às 9h, a execução
    ocorre na próxima vez que for ligado.
 5. **Somente LinkedIn.** O suporte ao Catho e ao Outlook foi removido do código
@@ -495,7 +497,7 @@ módulos novos e o controle. O `config.txt` e o histórico servem para as duas.
 |---|---|---|
 | 1.0 | ago/2026 | Emissão inicial. Agente em operação, com agendamento diário às 9h. |
 | 1.1 | ago/2026 | Atualizado após a primeira calibragem com dados reais (110 vagas). Inclui as listas de palavras-chave vigentes, a referência de nota mínima, a verificação de versão do programa e cinco falhas novas na seção 9.2. Programa na versão 1.4. |
-| 1.2 | out/2026 | Programa na versão 1.5: palavras-chave em arquivo próprio, segunda opinião da IA, controle de candidaturas com indicadores, testes automáticos e código reorganizado em módulos. Novas seções 5.6, 6.1, 8.5, 8.6, 8.7 e 9.6; tabela 9.2 e limitações atualizadas. |
+| 1.2 | out/2026 | Programa na versão 1.5.1: palavras-chave em arquivo próprio, segunda opinião da IA, controle de candidaturas com indicadores, testes automáticos e código reorganizado em módulos. Novas seções 5.6, 6.1, 8.5, 8.6, 8.7 e 9.6; tabela 9.2 e limitações atualizadas. |
 
 ---
 
@@ -530,3 +532,6 @@ Mantido como referência para futuras manutenções.
 | Leitura marcava os alertas como lidos no Gmail | Leitura em modo somente consulta (`BODY.PEEK`) |
 | Código antigo do Catho e do Outlook dificultava a manutenção | Removido; código separado em módulos com uma função cada |
 | Mudança no layout dos e-mails só era percebida com o relatório vazio | Testes automáticos com e-mail de exemplo, rodando no GitHub a cada atualização |
+| No primeiro teste da v1.5, a IA aprovou consultorias de ERP (SAP, TOTVS, NetSuite) e controle de qualidade de produção | Instrução da IA reescrita com o perfil do candidato, regras de exclusão e exemplos reais de aprovação e recusa |
+| A mesma vaga aparecia várias vezes, publicada com números diferentes (88 repetições no histórico) | Anúncio com mesmo cargo e empresa dos últimos 30 dias é tratado como repetido |
+| Em parte dos alertas, o título engolia empresa e local, e a empresa ficava vazia (20 vagas no histórico) | Título separado pelos blocos internos do link; salário e selos retirados do local |

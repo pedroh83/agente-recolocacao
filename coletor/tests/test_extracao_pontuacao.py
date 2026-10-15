@@ -1,4 +1,4 @@
-from extracao import deduzir_empresa_e_local, extrair_vagas, id_da_vaga, link_limpo
+from extracao import deduzir_empresa_e_local, extrair_vagas, id_da_vaga, link_limpo, separar_titulo
 from pontuacao import avaliar, casa_termo
 from texto import limpar_html, normalizar
 
@@ -90,3 +90,19 @@ def test_vaga_fora_do_perfil_fica_sem_curriculo(html_exemplo, palavras):
     v = avaliar(extrair_vagas(html_exemplo)[3], palavras)
     assert v["curriculo"] == "?"
     assert v["nota"] == 0
+
+
+def test_link_que_envolve_o_cartao_inteiro_nao_engole_empresa_e_local(html_exemplo):
+    v = [v for v in extrair_vagas(html_exemplo) if "1000000006" in v["link"]][0]
+    assert v["titulo"] == "Analista de Sistemas Sênior"
+    assert v["empresa"] == "Épsilon Tecnologia"
+    assert v["local"] == "Salvador, BA"  # sem o salario e sem o selo
+
+
+def test_separar_titulo_sem_cartao_nao_muda_nada():
+    assert separar_titulo("<b>Analista de Processos</b>") == ("Analista de Processos", "")
+
+
+def test_local_com_modalidade_e_texto_depois():
+    assert deduzir_empresa_e_local("Oficial Atakarejo · Salvador, BA (Presencial) Crescimento", "") == \
+        ("Oficial Atakarejo", "Salvador, BA (Presencial)")

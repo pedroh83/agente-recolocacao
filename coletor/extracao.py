@@ -69,13 +69,14 @@ def extrair_vagas(html: str, assunto: str = "") -> List[Dict[str, str]]:
 
     vagas = []
     for i, (_inicio, fim, url, miolo) in enumerate(candidatas):
-        titulo = limpar_html(miolo)
+        titulo, dentro_do_link = separar_titulo(miolo)
         # Links de imagem ou de botao vem vazios ou genericos: descarta
         if len(titulo) < 4 or normalizar(titulo) in TEXTOS_DE_BOTAO:
             continue
 
         limite = candidatas[i + 1][0] if i + 1 < len(candidatas) else len(html)
-        contexto = limpar_html(html[fim:min(limite, fim + TAMANHO_CONTEXTO)])
+        depois = limpar_html(html[fim:min(limite, fim + TAMANHO_CONTEXTO)])
+        contexto = f"{dentro_do_link} {depois}".strip()
         empresa, local = deduzir_empresa_e_local(contexto, titulo)
 
         vagas.append({
@@ -88,6 +89,23 @@ def extrair_vagas(html: str, assunto: str = "") -> List[Dict[str, str]]:
             "assunto_email": assunto,
         })
     return vagas
+
+
+def separar_titulo(miolo: str) -> Tuple[str, str]:
+    """Separa o titulo do resto quando o link envolve o cartao inteiro da vaga.
+
+    Em parte dos alertas, o link abrange titulo, empresa e local, cada um num
+    bloco HTML proprio. Sem separar, o titulo vira
+    "Analista de Processos Empresa X · Salvador, BA" e a empresa fica vazia.
+    Devolve (titulo, texto restante de dentro do link).
+    """
+    texto = limpar_html(miolo)
+    if "\u00b7" not in texto:
+        return texto, ""
+    pedacos = [p for p in (limpar_html(x) for x in re.split(r"<[^>]+>", miolo or "")) if p]
+    if len(pedacos) >= 2 and "\u00b7" not in pedacos[0] and len(pedacos[0]) >= 4:
+        return pedacos[0], " ".join(pedacos[1:])
+    return texto, ""
 
 
 def deduzir_empresa_e_local(contexto: str, titulo: str) -> Tuple[str, str]:
@@ -124,6 +142,11 @@ def deduzir_empresa_e_local(contexto: str, titulo: str) -> Tuple[str, str]:
                     break
             else:
                 empresa = resto[:60]
+
+    # Tira do local o salario e os selos que o LinkedIn poe depois dele
+    local = re.split(r"\s+(?:R\$|US\$|\u20ac)", local)[0]
+    if ")" in local:
+        local = local[:local.index(")") + 1]
 
     # Corta o local em "Cidade, Estado": o pais nao acrescenta nada
     if local:

@@ -23,18 +23,40 @@ from configuracao import Config
 
 MODELOS_RESERVA = ["gemini-flash-latest", "gemini-2.5-flash"]
 
-PROMPT = """Classifique titulos de vagas de emprego para um candidato com dois perfis:
+PROMPT = """Voce faz a triagem de titulos de vagas para UM candidato. Seja rigoroso: so aprove o
+que o candidato poderia assumir HOJE com a experiencia que tem.
 
-A = Qualidade e Processos: gestao da qualidade, ISO 9001/14001/45001, auditoria, melhoria continua,
-    mapeamento e analise de processos, excelencia operacional, controles internos, compliance.
-B = Requisitos e Tecnologia: analise de requisitos, analise de negocios, business analyst,
-    product owner, QA e testes de software, analista de sistemas ou funcional, implantacao de sistemas.
+O CANDIDATO
+- Mais de 10 anos em Gestao da Qualidade: ISO 9001, 14001 e 45001, auditorias internas,
+  nao conformidades, indicadores, mapeamento e melhoria de processos, procedimentos (POP).
+- Experiencia recente em projetos de tecnologia: levantamento de requisitos, analise de negocios,
+  Scrum, historias de usuario e testes manuais / homologacao.
+- NAO tem experiencia com modulos de ERP (SAP, TOTVS, Oracle, NetSuite), nem com plataformas
+  especificas (Salesforce, ServiceNow, GLPI), nem com programacao, BI ou dados.
 
-O candidato tem nivel analista (pleno/senior). NAO servem: estagio, vendas, atendimento, operacao de
-maquinas, logistica operacional, engenharia de campo, desenvolvimento de software (programador),
-cargos de diretoria.
+PERFIS
+A = Qualidade e Processos: analista/especialista/coordenador de qualidade (sistema de gestao),
+    processos, melhoria continua, excelencia operacional, auditoria, compliance, governanca de processos.
+B = Requisitos e Tecnologia: analista de requisitos, analista de negocios, business analyst,
+    product owner, analista funcional, analista de sistemas, QA / testes de software (manuais ou funcionais).
+N = Nao combina.
 
-Para cada titulo, responda "A", "B" ou "N" (nao combina). Na duvida, responda "N".
+RESPONDA N QUANDO
+- O cargo exige um ERP ou plataforma especifica: "Consultor SAP MM", "Analista TOTVS RM",
+  "Analista de ERP NetSuite", "Consultor ServiceNow", "Consultor GLPI".
+- For qualidade de chao de fabrica ou inspecao: "Controlador de qualidade", "Inspetor de qualidade",
+  "Tecnico de qualidade".
+- For desenvolvimento, automacao de testes com codigo, dados, BI, suporte tecnico, vendas,
+  atendimento, operacoes, financeiro, juridico, estagio ou diretoria.
+- Houver duvida.
+
+EXEMPLOS
+"Especialista de Processos" -> A | "Analista de Metodos e Processos" -> A
+"Business Process Analyst" -> A | "Especialista de Qualidade" -> A
+"Senior Functional Tester" -> B | "Business Analysis Consultant" -> B
+"Consultor SAP SuccessFactors" -> N | "Analista de ERP NetSuite" -> N
+"Controlador de qualidade" -> N | "Consultor Senior GLPI" -> N
+
 Responda APENAS com JSON, sem texto extra, neste formato:
 [{{"i": 0, "perfil": "N"}}, {{"i": 1, "perfil": "A"}}]
 

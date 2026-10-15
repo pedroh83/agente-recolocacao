@@ -25,7 +25,7 @@ import datetime as dt
 import json
 import os
 import sys
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from configuracao import Config, ErroConfiguracao, carregar_config, carregar_palavras_chave
 from controle import atualizar_controle
@@ -34,8 +34,9 @@ from extracao import extrair_vagas, id_da_vaga
 from ia_titulos import reavaliar_titulos
 from planilha_dia import gerar_planilha_do_dia
 from pontuacao import avaliar
+from texto import normalizar
 
-VERSAO = "1.5"
+VERSAO = "1.5.1"
 
 
 # ---------------------------------------------------------------------------
@@ -71,14 +72,39 @@ def salvar_historico(cfg: Config, historico: Dict[str, dict]) -> None:
 # Etapas
 # ---------------------------------------------------------------------------
 
-def separar_novas(brutas: List[dict], historico: Dict[str, dict]) -> List[dict]:
-    """Remove repetidas no mesmo lote e as que ja estao no historico."""
+DIAS_ANUNCIO_REPETIDO = 30
+
+
+def chave_do_anuncio(titulo: str, empresa: str) -> str:
+    """Mesmo cargo na mesma empresa. Vazio se faltar a empresa (nao da para comparar)."""
+    titulo, empresa = " ".join(normalizar(titulo).split()), " ".join(normalizar(empresa).split())
+    return f"{titulo}|{empresa}" if titulo and empresa else ""
+
+
+def separar_novas(brutas: List[dict], historico: Dict[str, dict],
+                  hoje: Optional[dt.date] = None) -> List[dict]:
+    """
+    Remove as vagas repetidas no mesmo lote e as que ja estao no historico.
+
+    Alem do numero da vaga, compara cargo + empresa: o LinkedIn publica a mesma
+    vaga varias vezes, com numeros diferentes (uma por cidade, por exemplo).
+    Um anuncio igual a outro dos ultimos 30 dias conta como repetido.
+    """
+    hoje = hoje or dt.date.today()
+    limite = (hoje - dt.timedelta(days=DIAS_ANUNCIO_REPETIDO)).isoformat()
+    anuncios_recentes = {chave_do_anuncio(h.get("titulo", ""), h.get("empresa", ""))
+                         for h in historico.values() if str(h.get("data", "")) >= limite}
+    anuncios_recentes.discard("")
+
     vistas, novas = set(), []
     for v in brutas:
         ident = id_da_vaga(v["link"], v["titulo"], v["empresa"])
-        if ident in vistas or ident in historico:
+        anuncio = chave_do_anuncio(v["titulo"], v["empresa"])
+        if ident in vistas or ident in historico or (anuncio and anuncio in anuncios_recentes):
             continue
         vistas.add(ident)
+        if anuncio:
+            anuncios_recentes.add(anuncio)
         v["id"] = ident
         novas.append(v)
     return novas
