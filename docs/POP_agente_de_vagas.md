@@ -3,7 +3,7 @@
 **Procedimento Operacional Padrão**
 Responsável: Pedro Henrique Simas
 Versão: 1.2 — outubro/2026
-Versão do programa: 1.5.1
+Versão do programa: 1.5.2
 
 ---
 
@@ -61,6 +61,8 @@ Madrugada    LinkedIn processa os alertas e envia os e-mails
              6. Atualiza o controle de candidaturas: junta histórico,
                 envios marcados nas planilhas do dia e adaptações do
                 Adaptador de Currículo
+             7. Move para PODE_APAGAR as planilhas do dia com mais
+                de 7 dias e as cópias de correção
                           ↓
              A planilha do dia abre automaticamente na tela
 ```
@@ -83,6 +85,7 @@ Madrugada    LinkedIn processa os alertas e envia os e-mails
 | `ia_titulos.py` | Segunda opinião da IA sobre títulos de nota baixa |
 | `planilha_dia.py` | Gera a planilha do dia |
 | `controle.py` | Gera o controle de candidaturas e os indicadores |
+| `arquivamento.py` | Move para `PODE_APAGAR` os arquivos que não são mais necessários |
 | `texto.py` | Funções de texto usadas pelos demais |
 | `palavras_chave.txt` | **Listas de palavras-chave** — editar aqui para calibrar |
 | `config.txt` | **Configuração e senha** — não compartilhar |
@@ -103,6 +106,8 @@ Todos os arquivos `.py` precisam ficar juntos na mesma pasta.
 | `controle_candidaturas.xlsx` | Controle único de candidaturas e indicadores |
 | `controle_candidaturas_backup.xlsx` | Cópia do controle antes da última atualização |
 | `vagas_vistas.json` | Histórico de vagas já exibidas |
+| `LEIA-ME.txt` | Explica cada arquivo da pasta |
+| `PODE_APAGAR\` | Arquivos que não são mais necessários, movidos pelo agente (ver 8.7) |
 
 ### 5.2 Conta de e-mail
 
@@ -132,7 +137,7 @@ Todos os arquivos `.py` precisam ficar juntos na mesma pasta.
 Ao rodar, a primeira linha exibe a versão:
 
 ```
-=== Agente de Vagas v1.5.1 ===
+=== Agente de Vagas v1.5.2 ===
 ```
 
 Conferir sempre após uma atualização. Se o número não mudar, o arquivo antigo
@@ -150,6 +155,7 @@ arquivo antigo primeiro**, depois mover o novo.
 | `dias` | `2` | Dias de e-mail para trás a cada execução |
 | `ia_titulos` | `auto` | `auto` liga a IA se o Adaptador tiver chave; `nao` desliga |
 | `ia_maximo` | `40` | Máximo de títulos enviados à IA por execução |
+| `dias_para_arquivar` | `7` | Planilhas do dia mais antigas que isso vão para `PODE_APAGAR`; `0` desliga |
 | `pasta_saida` | `C:\Users\SEU_USUARIO\AgenteVagas` | Onde ficam planilhas, histórico e controle |
 | `pasta_adaptador` | `C:\AgenteVagas\Adaptador` | Onde está o Adaptador de Currículo |
 
@@ -205,7 +211,7 @@ Não é falha.
 | Ver de novo vagas já exibidas | `python agente_vagas.py --refazer` |
 | Buscar mais dias para trás (após viagem) | `python agente_vagas.py --dias 10` |
 | Rodar sem consultar a IA | `python agente_vagas.py --sem-ia` |
-| Só atualizar o controle de candidaturas | `python agente_vagas.py --so-controle` |
+| Só atualizar o controle e arrumar a pasta | `python agente_vagas.py --so-controle` |
 | Verificar a conexão com o Gmail | `python diagnostico.py` |
 | Ver o conteúdo dos e-mails recebidos | `python inspecionar.py` |
 
@@ -354,7 +360,27 @@ Regras:
 - Não renomear as colunas nem a aba Candidaturas: o agente as procura pelo nome.
 - A coluna ID fica oculta. Ela identifica a vaga e não deve ser alterada.
 
-### 8.7 Testes automáticos
+### 8.7 Arrumação automática da pasta de saída
+
+Ao final de cada execução, depois de atualizar o controle, o agente move para a
+subpasta `PODE_APAGAR` os arquivos que não são mais necessários:
+
+- planilhas do dia com mais de 7 dias (o "Enviado?" delas já está no controle);
+- cópias de segurança feitas em correções (`..._antes_da_correcao`).
+
+Regras:
+- O controle, o backup do controle e o `vagas_vistas.json` **nunca** são movidos.
+- Se o controle não puder ser atualizado (ex.: aberto no Excel), as planilhas do
+  dia ficam onde estão, para o "Enviado?" delas não se perder.
+- Arquivo aberto no Excel é movido na execução seguinte.
+- Um arquivo com o mesmo nome já existente na `PODE_APAGAR` não é sobrescrito:
+  o novo recebe um número, ex.: `vagas_2026-10-01 (2).xlsx`.
+- O prazo muda com `dias_para_arquivar` no `config.txt`; `0` desliga a mudança
+  das planilhas.
+- O conteúdo da `PODE_APAGAR` pode ser apagado a qualquer momento. O agente não
+  usa nada de lá.
+
+### 8.8 Testes automáticos
 
 O programa tem testes automáticos (pasta `tests` no repositório do GitHub), que
 verificam a leitura dos e-mails, a pontuação, o controle e a IA, usando um
@@ -439,7 +465,7 @@ Perder a senha é normal — ela é descartável.
 
 ### 9.6 Voltar para a versão anterior (1.4)
 
-Se a versão 1.5.1 apresentar um problema que impeça o uso:
+Se a versão 1.5.2 apresentar um problema que impeça o uso:
 
 1. Abrir `C:\AgenteVagas\backup_v1.4`
 2. Copiar `agente_vagas.py`, `diagnostico.py` e `inspecionar.py` para
@@ -474,7 +500,7 @@ módulos novos e o controle. O `config.txt` e o histórico servem para as duas.
    inativo, aquelas vagas nunca aparecerão no relatório.
 2. **A extração depende do formato dos e-mails do LinkedIn.** Se a plataforma
    mudar o layout, a leitura pode falhar e exigir ajuste no código. Os testes
-   automáticos (8.7) ajudam a detectar e corrigir.
+   automáticos (8.8) ajudam a detectar e corrigir.
 3. **A pontuação é por palavra-chave**, não por compreensão do texto. A segunda
    opinião da IA (8.5) reduz esse problema para os títulos de nota baixa, mas
    o alerta do LinkedIn traz só o título, não a descrição da vaga. Vagas
@@ -501,7 +527,7 @@ módulos novos e o controle. O `config.txt` e o histórico servem para as duas.
 |---|---|---|
 | 1.0 | ago/2026 | Emissão inicial. Agente em operação, com agendamento diário às 9h. |
 | 1.1 | ago/2026 | Atualizado após a primeira calibragem com dados reais (110 vagas). Inclui as listas de palavras-chave vigentes, a referência de nota mínima, a verificação de versão do programa e cinco falhas novas na seção 9.2. Programa na versão 1.4. |
-| 1.2 | out/2026 | Programa na versão 1.5.1: palavras-chave em arquivo próprio, segunda opinião da IA, controle de candidaturas com indicadores, testes automáticos e código reorganizado em módulos. Novas seções 5.6, 6.1, 8.5, 8.6, 8.7 e 9.6; tabela 9.2 e limitações atualizadas. |
+| 1.2 | out/2026 | Programa na versão 1.5.2: palavras-chave em arquivo próprio, segunda opinião da IA, controle de candidaturas com indicadores, testes automáticos e código reorganizado em módulos. Novas seções 5.6, 6.1, 8.5, 8.6, 8.7, 8.8 e 9.6; tabela 9.2 e limitações atualizadas. |
 
 ---
 
@@ -536,6 +562,7 @@ Mantido como referência para futuras manutenções.
 | Leitura marcava os alertas como lidos no Gmail | Leitura em modo somente consulta (`BODY.PEEK`) |
 | Código antigo do Catho e do Outlook dificultava a manutenção | Removido; código separado em módulos com uma função cada |
 | Mudança no layout dos e-mails só era percebida com o relatório vazio | Testes automáticos com e-mail de exemplo, rodando no GitHub a cada atualização |
+| Arquivos de teste, cópias e planilhas antigas acumulavam na pasta de saída | Arrumação automática: o que não é mais necessário vai para `PODE_APAGAR` (8.7) |
 | No primeiro teste da v1.5, a IA aprovou consultorias de ERP (SAP, TOTVS, NetSuite) e controle de qualidade de produção | Instrução da IA reescrita com o perfil do candidato, regras de exclusão e exemplos reais de aprovação e recusa |
 | A mesma vaga aparecia várias vezes, publicada com números diferentes (88 repetições no histórico) | Anúncio com mesmo cargo e empresa dos últimos 30 dias é tratado como repetido |
 | Em parte dos alertas, o título engolia empresa e local, e a empresa ficava vazia (20 vagas no histórico) | Título separado pelos blocos internos do link; salário e selos retirados do local |

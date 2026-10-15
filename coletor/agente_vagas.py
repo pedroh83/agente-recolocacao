@@ -27,6 +27,7 @@ import os
 import sys
 from typing import Dict, List, Optional
 
+from arquivamento import NOME_PASTA, arrumar_pasta
 from configuracao import Config, ErroConfiguracao, carregar_config, carregar_palavras_chave
 from controle import atualizar_controle
 from email_gmail import ErroEmail, ler_emails
@@ -36,7 +37,7 @@ from planilha_dia import gerar_planilha_do_dia
 from pontuacao import avaliar
 from texto import normalizar
 
-VERSAO = "1.5.1"
+VERSAO = "1.5.2"
 
 
 # ---------------------------------------------------------------------------
@@ -140,17 +141,27 @@ def registrar_no_historico(historico: Dict[str, dict], finais: List[dict], hoje:
         }
 
 
-def atualizar_e_informar_controle(cfg: Config, historico: Dict[str, dict], palavras) -> None:
+def atualizar_e_informar_controle(cfg: Config, historico: Dict[str, dict], palavras) -> bool:
+    """Atualiza o controle e mostra o resumo. Devolve True se o controle foi gravado."""
     resumo = atualizar_controle(cfg.dir_saida, historico, cfg.pasta_adaptador, palavras)
     if resumo.get("erro"):
         print(f"      [aviso] Controle de candidaturas: {resumo['erro']}")
-        return
+        return False
     print(f"      Controle: {resumo['linhas']} vaga(s), {resumo['enviadas']} candidatura(s) enviada(s).")
     if resumo["enviados_importados"]:
         print(f"      {resumo['enviados_importados']} envio(s) trazido(s) das planilhas do dia.")
     if resumo["adaptacoes_ligadas"] or resumo["adaptacoes_avulsas"]:
         print(f"      Adaptacoes de curriculo: {resumo['adaptacoes_ligadas']} ligada(s) a vagas do agente, "
               f"{resumo['adaptacoes_avulsas']} de vagas encontradas por fora.")
+    return True
+
+
+def arrumar_e_informar(cfg: Config, controle_ok: bool) -> None:
+    movidos = arrumar_pasta(cfg.dir_saida, cfg.dias_para_arquivar, controle_atualizado=controle_ok)
+    if movidos:
+        print(f"      {len(movidos)} arquivo(s) que nao sao mais necessarios foram para {NOME_PASTA}:")
+        for nome in movidos:
+            print(f"        - {nome}")
 
 
 def abrir_no_windows(caminho: str) -> None:
@@ -188,7 +199,7 @@ def executar(args: argparse.Namespace) -> int:
 
     if args.so_controle:
         print("Atualizando so o controle de candidaturas...")
-        atualizar_e_informar_controle(cfg, historico, palavras)
+        arrumar_e_informar(cfg, atualizar_e_informar_controle(cfg, historico, palavras))
         return 0
 
     print(f"[1/6] Lendo e-mails (pasta '{pasta}', ultimos {dias} dia(s))...")
@@ -236,7 +247,7 @@ def executar(args: argparse.Namespace) -> int:
         print("      Nenhuma vaga nova hoje - a planilha do dia nao foi alterada.")
 
     print("[6/6] Atualizando o controle de candidaturas...")
-    atualizar_e_informar_controle(cfg, historico, palavras)
+    arrumar_e_informar(cfg, atualizar_e_informar_controle(cfg, historico, palavras))
 
     print(f"\nHistorico: {len(historico)} vaga(s) acumulada(s).")
     if caminho:

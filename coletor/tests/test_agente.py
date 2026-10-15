@@ -101,3 +101,27 @@ def test_anuncio_repetido_com_outro_numero_e_ignorado(tmp_path, monkeypatch, htm
     antigo = {"li-9": {"data": "2026-08-01", "titulo": "Senior Functional Tester", "empresa": "EPAM Systems"}}
     assert separar_novas([dict(brutas[0])], recente, dt.date(2026, 10, 14)) == []
     assert len(separar_novas([dict(brutas[0])], antigo, dt.date(2026, 10, 14))) == 1  # mais de 30 dias: vale de novo
+
+
+def test_planilha_antiga_leva_o_enviado_ao_controle_antes_de_ir_para_pode_apagar(tmp_path, monkeypatch, html_exemplo):
+    from planilha_dia import COL_ENVIADO, gerar_planilha_do_dia
+    saida = preparar(tmp_path, monkeypatch, html_exemplo)
+    saida.mkdir()
+    (saida / "vagas_vistas.json").write_text(json.dumps({"li-555": {
+        "data": "2026-09-01", "titulo": "Analista de Processos", "empresa": "Antiga SA",
+        "link": "https://www.linkedin.com/jobs/view/555/"}}), encoding="utf-8")
+    antiga = saida / "vagas_2026-09-01.xlsx"
+    gerar_planilha_do_dia([{"nota": 4, "curriculo": "A", "titulo": "Analista de Processos", "empresa": "Antiga SA",
+                            "local": "", "plataforma": "LinkedIn", "termos": "",
+                            "link": "https://www.linkedin.com/jobs/view/555/"}], str(antiga))
+    wb = load_workbook(antiga)
+    wb.active.cell(row=2, column=COL_ENVIADO).value = "sim"
+    wb.save(antiga)
+
+    assert agente_vagas.main([]) == 0
+    assert not antiga.exists()
+    assert (saida / "PODE_APAGAR" / "vagas_2026-09-01.xlsx").exists()
+    ws = load_workbook(saida / "controle_candidaturas.xlsx")["Candidaturas"]
+    titulos = [c.value for c in ws[1]]
+    linha = [dict(zip(titulos, r)) for r in ws.iter_rows(min_row=2, values_only=True) if r[-1] == "li-555"][0]
+    assert linha["Enviado?"] == "Sim"

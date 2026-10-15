@@ -52,6 +52,8 @@ class Config:
     # Reavaliar com IA os titulos de nota baixa: "auto" (liga se houver chave), "sim" ou "nao"
     ia_titulos: str = "auto"
     ia_maximo: int = 40
+    # Planilhas do dia mais velhas que isso vao para PODE_APAGAR (0 = nunca)
+    dias_para_arquivar: int = 7
 
     @property
     def senha_sem_espacos(self) -> str:
@@ -101,6 +103,8 @@ def carregar_config(caminho: Optional[str] = None) -> Config:
             cfg.ia_titulos = normalizar(valor) or "auto"
         elif chave == "ia_maximo":
             cfg.ia_maximo = _inteiro(valor, chave, n)
+        elif chave == "dias_para_arquivar":
+            cfg.dias_para_arquivar = _inteiro(valor, chave, n)
         # chaves desconhecidas sao ignoradas, para nao quebrar configs antigos
     return cfg
 

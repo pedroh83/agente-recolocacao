@@ -33,3 +33,6 @@ dias = 2
 # auto = liga se o Adaptador tiver a chave do Gemini | sim | nao
 # ia_titulos = auto
 # ia_maximo = 40
+
+# Planilhas do dia mais antigas que isso vao para a pasta PODE_APAGAR (0 = nunca)
+# dias_para_arquivar = 7

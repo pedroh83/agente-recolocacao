@@ -40,6 +40,7 @@ flowchart LR
 - Pede uma **segunda opinião ao Gemini** sobre os títulos de nota baixa, numa única consulta por dia, para não perder cargos com nomes fora das listas.
 - Indica qual currículo enviar: **A (Qualidade & Processos)** ou **B (Requisitos & Tecnologia)**.
 - Gera uma **planilha Excel** do dia, ordenada por nota, com link de candidatura e coluna "Enviado?".
+- **Arruma a própria pasta:** planilhas com mais de 7 dias e cópias de correção vão para `PODE_APAGAR`, só depois que o "Enviado?" delas foi levado ao controle.
 
 ### Agente 2: Adaptador de Currículo
 - Uso em 3 passos: copiar a descrição da vaga no LinkedIn (Ctrl + C) e dar dois cliques no atalho **Adaptar Currículo**.
@@ -106,7 +107,7 @@ Uma planilha única, `controle_candidaturas.xlsx`, atualizada a cada execução 
 - Mais de **600 vagas novas** triadas entre agosto e outubro de 2026, de 5 a 15 por dia, já filtradas e ordenadas.
 - Calibragem da pontuação feita com **110 vagas reais** (agosto/2026).
 - Exemplo real de adaptação: compatibilidade estimada pela IA de **35% → 85%**.
-- **57 testes automáticos** cobrindo extração, pontuação, configuração, controle, IA e as regras de veracidade do adaptador.
+- **64 testes automáticos** cobrindo extração, pontuação, configuração, controle, IA e as regras de veracidade do adaptador.
 
 ## Documentação
 
@@ -128,6 +129,7 @@ agente-recolocacao/
 │   ├── ia_titulos.py         # segunda opinião do Gemini sobre títulos de nota baixa
 │   ├── planilha_dia.py       # planilha do dia
 │   ├── controle.py           # controle de candidaturas e indicadores
+│   ├── arquivamento.py       # move para PODE_APAGAR o que não é mais necessário
 │   ├── texto.py              # normalização de texto
 │   ├── palavras_chave.txt    # listas editáveis dos currículos A e B
 │   ├── diagnostico.py        # testa o login e mostra o que há na conta de e-mail
