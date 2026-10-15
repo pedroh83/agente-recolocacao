@@ -182,6 +182,10 @@ mensagem que indica a linha do problema.
 leva o "sim" das planilhas do dia e as adaptações do Adaptador para o
 `controle_candidaturas.xlsx`.
 
+**Não mova as planilhas da última semana.** O agente só lê o "sim" das
+planilhas que estão na pasta principal. Ele mesmo move para `PODE_APAGAR`
+as que passaram de 7 dias (ver 8.7).
+
 **Planilha vazia** significa que não houve vaga nova desde a última execução.
 Não é falha.
 
@@ -379,6 +383,9 @@ Regras:
   das planilhas.
 - O conteúdo da `PODE_APAGAR` pode ser apagado a qualquer momento. O agente não
   usa nada de lá.
+- Não é preciso mover nada à mão. Uma planilha da última semana movida para a
+  `PODE_APAGAR` deixa de ter o "Enviado?" levado ao controle: se isso
+  acontecer, devolva-a para a pasta principal.
 
 ### 8.8 Testes automáticos
 
@@ -429,6 +436,7 @@ Diante de qualquer suspeita de falha, nesta ordem:
 | Correção aplicada não surtiu efeito | Arquivo antigo ainda em uso | Conferir a versão na primeira linha (ver 5.5) |
 | Envio marcado não aparece no controle | O controle é atualizado na execução seguinte | Rodar `python agente_vagas.py --so-controle` |
 | Controle perdeu algum dado | Arquivo editado com colunas renomeadas | Recuperar de `controle_candidaturas_backup.xlsx` |
+| "Sim" marcado não chegou ao controle | A planilha do dia foi movida para `PODE_APAGAR` antes de 7 dias | Devolver a planilha para a pasta principal e rodar `--so-controle` |
 
 ### 9.3 Recuperar a senha de app
 
