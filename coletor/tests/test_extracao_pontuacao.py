@@ -106,3 +106,13 @@ def test_separar_titulo_sem_cartao_nao_muda_nada():
 def test_local_com_modalidade_e_texto_depois():
     assert deduzir_empresa_e_local("Oficial Atakarejo · Salvador, BA (Presencial) Crescimento", "") == \
         ("Oficial Atakarejo", "Salvador, BA (Presencial)")
+
+
+def test_vaga_em_petrolina_ganha_bonus_de_local(palavras):
+    v = avaliar({"titulo": "Analista de Processos", "empresa": "X", "local": "Petrolina, PE (Presencial)"}, palavras)
+    assert v["nota"] == 3 + 1 + palavras.bonus_local
+
+
+def test_vaga_presencial_em_outro_estado_nao_e_descartada(palavras):
+    v = avaliar({"titulo": "Analista de Processos", "empresa": "X", "local": "Curitiba, PR (Presencial)"}, palavras)
+    assert v["descartada"] == "" and v["nota"] == 4

@@ -225,7 +225,9 @@ As listas ficam no arquivo **`palavras_chave.txt`**, separadas em seções:
 `[A]`, `[B]`, `[DESCARTE]` e `[LOCAL]`. Cada currículo tem termos de
 **peso 3** (fortes, quase definem a vaga) e **peso 1** (apoio). A nota final é
 a soma dos pesos encontrados, mais o bônus da seção `[LOCAL]` (2 pontos) se a
-vaga citar Salvador, Bahia, remoto, home office ou híbrido.
+vaga citar Salvador, Bahia, Petrolina, remoto, home office ou híbrido.
+Vagas presenciais ou híbridas em outros estados **não são descartadas**: só
+deixam de ganhar o bônus.
 
 **Procedimento:**
 
@@ -293,6 +295,8 @@ Acessar **LinkedIn → Vagas → Alertas de vaga** e confirmar:
 | 1 | Salvador, Bahia | Analista da Qualidade, Coordenador da Qualidade, Analista de Processos, Auditor Interno, Gestão da Qualidade, ISO 9001 |
 | 2 | Salvador, Bahia | Analista de Requisitos, Analista de Negócios, Analista de Testes, Analista Funcional, Analista de Sistemas, Product Owner, Quality Assurance |
 | 3 | Brasil + filtro Remoto | Mesmos termos do Bloco 2 |
+| 4 | Petrolina, Pernambuco | Mesmos termos dos Blocos 1 e 2 |
+| 5 | Juazeiro, Bahia | Mesmos termos dos Blocos 1 e 2 |
 
 ### 8.4 Limpar o histórico
 

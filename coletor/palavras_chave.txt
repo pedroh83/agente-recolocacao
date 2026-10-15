@@ -56,4 +56,4 @@ vendedor, vendas externas, motorista, operador de caixa
 
 [LOCAL]   # bonus na nota se a vaga citar um destes termos
 bonus: 2
-salvador, bahia, ba, remoto, home office, híbrido
+salvador, bahia, ba, remoto, home office, híbrido, petrolina
