@@ -60,10 +60,14 @@ def test_refazer_nao_apaga_o_historico(tmp_path, monkeypatch, html_exemplo):
     saida = preparar(tmp_path, monkeypatch, html_exemplo)
     saida.mkdir()
     (saida / "vagas_vistas.json").write_text(json.dumps({
-        "li-999": {"data": "2026-09-01", "titulo": "Vaga antiga", "empresa": "X", "link": ""}}), encoding="utf-8")
+        "li-999": {"data": "2026-09-01", "titulo": "Vaga antiga", "empresa": "X", "link": ""},
+        "li-1000000001": {"data": "2026-10-01", "titulo": "Analista de Processos e Melhoria Contínua",
+                          "empresa": "Empresa Alfa Ltda", "link": ""}}), encoding="utf-8")
     agente_vagas.main(["--refazer"])
     historico = json.loads((saida / "vagas_vistas.json").read_text(encoding="utf-8"))
-    assert "li-999" in historico and "li-1000000001" in historico
+    assert "li-999" in historico and "li-1000000002" in historico
+    assert historico["li-1000000001"]["data"] == "2026-10-01"  # --refazer nao muda a data original
+    assert historico["li-1000000001"]["nota"] == 9
 
 
 def test_config_faltando_retorna_erro(tmp_path, monkeypatch, capsys):

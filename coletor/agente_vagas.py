@@ -131,8 +131,10 @@ def salvar_planilha_do_dia(cfg: Config, finais: List[dict], hoje: str) -> str:
 
 def registrar_no_historico(historico: Dict[str, dict], finais: List[dict], hoje: str) -> None:
     for v in finais:
+        # Com --refazer, a vaga pode ja estar no historico: mantem a data em que apareceu pela primeira vez
+        primeira_vez = historico.get(v["id"], {}).get("data") or hoje
         historico[v["id"]] = {
-            "data": hoje, "titulo": v["titulo"], "empresa": v["empresa"], "link": v["link"],
+            "data": primeira_vez, "titulo": v["titulo"], "empresa": v["empresa"], "link": v["link"],
             "local": v["local"], "nota": v["nota"], "curriculo": v["curriculo"],
             "termos": v["termos"], "origem": v.get("origem", "Agente"),
         }

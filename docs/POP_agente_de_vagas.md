@@ -528,7 +528,7 @@ Mantido como referência para futuras manutenções.
 | Envios espalhados em planilhas diárias, sem visão do resultado | Controle único de candidaturas com indicadores (PDCA) |
 | Adaptações do currículo sem ligação com as vagas | Controle liga o `historico.csv` do Adaptador às vagas por empresa e cargo |
 | Links das vagas guardavam tokens pessoais do e-mail | Gravação só do link curto da vaga |
-| `--refazer` substituía o histórico inteiro pelas vagas do dia | Histórico preservado; `--refazer` só ignora o filtro de repetidas |
+| `--refazer` substituía o histórico inteiro pelas vagas do dia (e, no teste da v1.5, trocava a data das vagas antigas) | Histórico preservado; `--refazer` só ignora o filtro de repetidas e mantém a data em que a vaga apareceu pela primeira vez |
 | Leitura marcava os alertas como lidos no Gmail | Leitura em modo somente consulta (`BODY.PEEK`) |
 | Código antigo do Catho e do Outlook dificultava a manutenção | Removido; código separado em módulos com uma função cada |
 | Mudança no layout dos e-mails só era percebida com o relatório vazio | Testes automáticos com e-mail de exemplo, rodando no GitHub a cada atualização |
