@@ -1,5 +1,9 @@
-# Configuracao do Agente de Vagas
-# Copie este arquivo para config.txt e preencha. NUNCA publique o config.txt.
+# ============================================
+#  CONFIGURACAO DO AGENTE DE VAGAS
+# ============================================
+#  Copie este arquivo para config.txt e preencha.
+#  NUNCA publique o config.txt: ele guarda a sua senha de app.
+# ============================================
 
 # Conta Gmail que recebe os alertas de vaga do LinkedIn
 email = seu-email-de-alertas@gmail.com
@@ -16,3 +20,16 @@ nota_minima = 4
 
 # Quantos dias de e-mail olhar para tras a cada execucao
 dias = 2
+
+# --- Opcionais (se nao escrever, valem os padroes) ---
+
+# Onde ficam a planilha do dia, o historico e o controle de candidaturas
+# pasta_saida = C:\Users\SEU_USUARIO\AgenteVagas
+
+# Pasta do Adaptador de Curriculo (historico.csv e chave do Gemini)
+# pasta_adaptador = C:\AgenteVagas\Adaptador
+
+# Segunda opiniao da IA sobre titulos de nota baixa:
+# auto = liga se o Adaptador tiver a chave do Gemini | sim | nao
+# ia_titulos = auto
+# ia_maximo = 40

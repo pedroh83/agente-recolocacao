@@ -1,0 +1,59 @@
+# =====================================================================
+#  PALAVRAS-CHAVE DO AGENTE DE VAGAS
+# =====================================================================
+#  Edite este arquivo no Bloco de Notas para calibrar a pontuacao.
+#  Voce NAO precisa mais mexer no agente_vagas.py.
+#
+#  Regras:
+#   - Separe os termos por virgula.
+#   - Pode escrever com acento e maiuscula: o agente normaliza tudo.
+#   - A comparacao e por palavra inteira: "ti" nao casa com "logistica".
+#   - Peso 3 = termo forte, que quase define a vaga.
+#     Peso 1 = termo de apoio.
+#   - Linhas que comecam com # sao comentarios.
+#
+#  Depois de editar, teste com:  python agente_vagas.py --debug --refazer
+# =====================================================================
+
+[A]   # Curriculo A - Qualidade, Processos e ISO
+peso 3: iso 9001, iso 14001, iso 45001, sistema de gestão da qualidade,
+peso 3: sistema de gestão integrado, sgq, sgi,
+peso 3: auditoria interna, auditor interno, auditora interna,
+peso 3: analista da qualidade, analista de qualidade,
+peso 3: coordenador da qualidade, coordenadora da qualidade,
+peso 3: gestão da qualidade, quality management,
+peso 3: mapeamento de processos, melhoria contínua, controles internos,
+peso 3: analista de processos, analista processos, gestão de processos,
+peso 3: automação de processos, consultor de processos, consultora de processos,
+peso 3: processos e sistemas, excelência operacional
+peso 1: qualidade, auditoria, processos, processo, pdca,
+peso 1: não conformidade, ação corretiva, indicadores, kpi, bpmn,
+peso 1: procedimento operacional, pop, 5s, lean, meio ambiente,
+peso 1: saúde e segurança, sst, certificação, conformidade, compliance,
+peso 1: integridade, riscos, governança, padronização, itil
+
+[B]   # Curriculo B - Requisitos, Negocios e Tecnologia
+peso 3: levantamento de requisitos, analista de requisitos, analista requisitos,
+peso 3: analista de negócios, analista de negócio, analista negócios,
+peso 3: business analyst, consultor de negócios, consultora de negócios,
+peso 3: análise de negócios, analista de implantação,
+peso 3: product owner, product ownership, analista funcional,
+peso 3: analista de sistemas, analista sistemas,
+peso 3: analista de testes, analista de qa, analista qa, qa,
+peso 3: quality assurance, quality engineer, quality analyst,
+peso 3: engenheiro de qa, engenheira de qa, teste manual, testes manuais,
+peso 3: homologação, analista de soluções
+peso 1: scrum, ágil, kanban, jira, sprint, backlog, user story,
+peso 1: história de usuário, cerimônias, uat, caso de teste, sql,
+peso 1: requisitos, documentação, stakeholder, product, dados,
+peso 1: inteligência artificial, automação, sistemas, ti,
+peso 1: negócio, negócios, implantação, analytics,
+peso 1: digitalização, transformação digital, no code, low code
+
+[DESCARTE]   # vaga eliminada se o TITULO contiver um destes termos
+estágio, estagiário, jovem aprendiz, aprendiz,
+vendedor, vendas externas, motorista, operador de caixa
+
+[LOCAL]   # bonus na nota se a vaga citar um destes termos
+bonus: 2
+salvador, bahia, ba, remoto, home office, híbrido

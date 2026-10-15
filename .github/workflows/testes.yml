@@ -1,0 +1,23 @@
+name: Testes
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  testes:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Instalar dependências
+        run: pip install -r coletor/requirements.txt -r adaptador/requirements.txt pytest
+      - name: Testes do coletor de vagas
+        run: python -m pytest -v coletor/tests
+      - name: Testes do adaptador de currículo
+        run: python -m pytest -v adaptador/tests

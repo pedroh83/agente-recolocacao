@@ -363,7 +363,8 @@ def verificar_veracidade(resultado, curriculos):
     for exp in cv.get("experiencias", []):
         empresa = exp.get("empresa", "")
         nucleo = re.sub(r"[^a-z0-9]", "", normalizar(empresa.split("(")[0].split("—")[0].split("-")[0]))
-        if nucleo and nucleo[:6] not in base_compacta:
+        # 10 letras: com 6, "Grupo Fantasia" passaria só porque o base tem um "Grupo ..."
+        if nucleo and nucleo[:10] not in base_compacta:
             alertas.append(f"Empresa '{empresa}' não aparece nos currículos base.")
         texto_exp = " ".join(exp.get("topicos", []))
         for numero in set(re.findall(r"\d+(?:[.,]\d+)?\s*%?", texto_exp)):

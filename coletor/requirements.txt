@@ -1,1 +1,3 @@
 openpyxl
+# Opcional: so para a segunda opiniao da IA sobre titulos (ia_titulos)
+google-genai

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<!--
+  E-mail de alerta de vagas de EXEMPLO, com dados ficticios.
+  Reproduz a estrutura dos alertas reais do LinkedIn: para cada vaga ha um link
+  de imagem (sem texto), o link com o titulo, a linha "Empresa · Local" e um
+  botao "Ver vaga". Os links trazem parametros de rastreamento, como os reais.
+-->
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Alerta de vagas</title></head>
+<body>
+<table role="presentation" width="100%">
+  <tr><td><h2>Novas vagas para você: Analista de Processos</h2></td></tr>
+
+  <!-- Vaga 1: perfil A, Salvador -->
+  <tr><td>
+    <a href="https://www.linkedin.com/comm/jobs/view/1000000001/?trackingId=abc%3D%3D&amp;refId=xyz&amp;otpToken=TOKEN123"><img src="logo1.png" alt=""></a>
+    <a href="https://www.linkedin.com/comm/jobs/view/1000000001/?trackingId=abc%3D%3D&amp;refId=xyz&amp;otpToken=TOKEN123" style="font-weight:bold">Analista de Processos e Melhoria Contínua</a>
+    <p>Empresa Alfa Ltda · Salvador, Bahia, Brasil (Híbrido)</p>
+    <a href="https://www.linkedin.com/comm/jobs/view/1000000001/?trackingId=abc">Ver vaga</a>
+  </td></tr>
+
+  <!-- Vaga 2: perfil B, remoto -->
+  <tr><td>
+    <a href="https://www.linkedin.com/comm/jobs/view/1000000002/?trackingId=def"><img src="logo2.png" alt=""></a>
+    <a href="https://www.linkedin.com/comm/jobs/view/1000000002/?trackingId=def">Analista de Requisitos Sênior</a>
+    <p>Beta Tecnologia S.A. · Brasil (Remoto)</p>
+    <a href="https://www.linkedin.com/comm/jobs/view/1000000002/?trackingId=def">Candidatar-se</a>
+  </td></tr>
+
+  <!-- Vaga 3: estagio, deve ser descartada -->
+  <tr><td>
+    <a href="https://www.linkedin.com/comm/jobs/view/1000000003/?trackingId=ghi">Estágio em Qualidade</a>
+    <p>Gama Indústria · Camaçari, Bahia, Brasil (Presencial)</p>
+  </td></tr>
+
+  <!-- Vaga 4: fora do perfil, nota baixa -->
+  <tr><td>
+    <a href="https://www.linkedin.com/comm/jobs/view/1000000004/?trackingId=jkl">Especialista em Logística Reversa</a>
+    <p>Delta Transportes · São Paulo, São Paulo, Brasil</p>
+  </td></tr>
+
+  <!-- Vaga 5: repetida (mesmo ID da vaga 1, vinda de outro bloco do e-mail) -->
+  <tr><td>
+    <a href="https://www.linkedin.com/jobs/view/1000000001/">Analista de Processos e Melhoria Contínua</a>
+    <p>Empresa Alfa Ltda · Salvador, Bahia, Brasil (Híbrido)</p>
+  </td></tr>
+
+  <!-- Links que nao sao vagas -->
+  <tr><td>
+    <a href="https://www.linkedin.com/comm/jobs/search/?keywords=processos">Ver todas as vagas</a>
+    <a href="https://www.linkedin.com/comm/feed/">Abrir o LinkedIn</a>
+    <a href="https://www.linkedin.com/comm/psettings/email">Cancelar inscrição</a>
+  </td></tr>
+</table>
+</body></html>

@@ -242,6 +242,7 @@ Sempre que fizer um curso, projeto ou emprego novo, atualize `curriculo_A.docx` 
 
 1. Às 9h, o Agente gera a planilha do dia com o link de cada vaga e a versão sugerida (A ou B).
 2. Você escolhe as vagas que valem a candidatura e faz os 3 passos da Parte 2 para cada uma.
+3. Na execução seguinte, o Agente registra cada adaptação no `controle_candidaturas.xlsx`, ligada à vaga correspondente. A aba **Indicadores** mostra se as candidaturas com currículo adaptado trazem mais retorno.
 
 ### Várias vagas de uma vez
 
