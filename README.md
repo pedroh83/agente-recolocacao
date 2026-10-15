@@ -146,4 +146,5 @@ agente-recolocacao/
 
 ---
 
-**Pedro Henrique Simas**: Qualidade, Processos e Requisitos | Salvador, BA
+**Pedro Henrique Simas**: Qualidade, Processos e Requisitos | Salvador, BA  
+[LinkedIn](https://www.linkedin.com/in/pedro-henrique-simas/)
