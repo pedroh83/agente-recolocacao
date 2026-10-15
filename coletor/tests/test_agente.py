@@ -52,7 +52,8 @@ def test_segunda_execucao_nao_repete_vagas_nem_apaga_a_planilha(tmp_path, monkey
     antes = planilha.read_bytes()
 
     assert agente_vagas.main([]) == 0
-    assert "Nenhuma vaga nova hoje" in capsys.readouterr().out
+    # As vagas abaixo da nota nao entram no historico: aparecem de novo, mas nenhuma vai para a planilha
+    assert "nenhuma atingiu a nota minima" in capsys.readouterr().out
     assert planilha.read_bytes() == antes
 
 
@@ -125,3 +126,17 @@ def test_planilha_antiga_leva_o_enviado_ao_controle_antes_de_ir_para_pode_apagar
     titulos = [c.value for c in ws[1]]
     linha = [dict(zip(titulos, r)) for r in ws.iter_rows(min_row=2, values_only=True) if r[-1] == "li-555"][0]
     assert linha["Enviado?"] == "Sim"
+
+
+def test_vagas_novas_abaixo_da_nota_explicam_e_abrem_o_controle(tmp_path, monkeypatch, html_exemplo, capsys):
+    saida = preparar(tmp_path, monkeypatch, html_exemplo)
+    agente_vagas.main([])  # cria o controle
+    abertos = []
+    monkeypatch.setattr(agente_vagas, "abrir_no_windows", abertos.append)
+    so_fracas = html_exemplo.replace("1000000004", "3000000004")  # so a vaga de logistica e nova
+    monkeypatch.setattr(agente_vagas, "ler_emails", lambda cfg, pasta, dias: [{"assunto": "A", "html": so_fracas}])
+    capsys.readouterr()
+    assert agente_vagas.main([]) == 0
+    saida_texto = capsys.readouterr().out
+    assert "nenhuma atingiu a nota minima (4)" in saida_texto
+    assert abertos == [str(saida / "controle_candidaturas.xlsx")]

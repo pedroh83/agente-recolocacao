@@ -107,7 +107,7 @@ Uma planilha única, `controle_candidaturas.xlsx`, atualizada a cada execução 
 - Mais de **600 vagas novas** triadas entre agosto e outubro de 2026, de 5 a 15 por dia, já filtradas e ordenadas.
 - Calibragem da pontuação feita com **110 vagas reais** (agosto/2026).
 - Exemplo real de adaptação: compatibilidade estimada pela IA de **35% → 85%**.
-- **64 testes automáticos** cobrindo extração, pontuação, configuração, controle, IA e as regras de veracidade do adaptador.
+- **65 testes automáticos** cobrindo extração, pontuação, configuração, controle, IA e as regras de veracidade do adaptador.
 
 ## Documentação
 

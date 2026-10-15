@@ -29,7 +29,7 @@ from typing import Dict, List, Optional
 
 from arquivamento import NOME_PASTA, arrumar_pasta
 from configuracao import Config, ErroConfiguracao, carregar_config, carregar_palavras_chave
-from controle import atualizar_controle
+from controle import NOME_ARQUIVO as NOME_CONTROLE, atualizar_controle
 from email_gmail import ErroEmail, ler_emails
 from extracao import extrair_vagas, id_da_vaga
 from ia_titulos import reavaliar_titulos
@@ -37,7 +37,7 @@ from planilha_dia import gerar_planilha_do_dia
 from pontuacao import avaliar
 from texto import normalizar
 
-VERSAO = "1.5.2"
+VERSAO = "1.5.3"
 
 
 # ---------------------------------------------------------------------------
@@ -243,6 +243,9 @@ def executar(args: argparse.Namespace) -> int:
         registrar_no_historico(historico, finais, hoje)
         salvar_historico(cfg, historico)
         print(f"      Pronto: {caminho}")
+    elif novas:
+        print(f"      {len(novas)} vaga(s) nova(s), mas nenhuma atingiu a nota minima ({cfg.nota_minima}).")
+        print("      A planilha do dia nao foi criada. Para ver as notas: python agente_vagas.py --debug")
     else:
         print("      Nenhuma vaga nova hoje - a planilha do dia nao foi alterada.")
 
@@ -250,8 +253,14 @@ def executar(args: argparse.Namespace) -> int:
     arrumar_e_informar(cfg, atualizar_e_informar_controle(cfg, historico, palavras))
 
     print(f"\nHistorico: {len(historico)} vaga(s) acumulada(s).")
+    # Sempre mostra algo ao terminar, para ficar claro que o agente rodou:
+    # a planilha do dia, ou o controle de candidaturas quando nao houver vaga nova
+    controle = os.path.join(cfg.dir_saida, NOME_CONTROLE)
     if caminho:
         abrir_no_windows(caminho)
+    elif os.path.exists(controle):
+        print("Abrindo o controle de candidaturas (nao houve vaga nova para a planilha do dia).")
+        abrir_no_windows(controle)
     return 0
 
 

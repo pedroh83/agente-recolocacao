@@ -3,7 +3,7 @@
 **Procedimento Operacional Padrão**
 Responsável: Pedro Henrique Simas
 Versão: 1.2 — outubro/2026
-Versão do programa: 1.5.2
+Versão do programa: 1.5.3
 
 ---
 
@@ -64,7 +64,8 @@ Madrugada    LinkedIn processa os alertas e envia os e-mails
              7. Move para PODE_APAGAR as planilhas do dia com mais
                 de 7 dias e as cópias de correção
                           ↓
-             A planilha do dia abre automaticamente na tela
+             Abre na tela a planilha do dia ou, se não houver vaga
+             nova, o controle de candidaturas
 ```
 
 ---
@@ -137,7 +138,7 @@ Todos os arquivos `.py` precisam ficar juntos na mesma pasta.
 Ao rodar, a primeira linha exibe a versão:
 
 ```
-=== Agente de Vagas v1.5.2 ===
+=== Agente de Vagas v1.5.3 ===
 ```
 
 Conferir sempre após uma atualização. Se o número não mudar, o arquivo antigo
@@ -186,8 +187,9 @@ leva o "sim" das planilhas do dia e as adaptações do Adaptador para o
 planilhas que estão na pasta principal. Ele mesmo move para `PODE_APAGAR`
 as que passaram de 7 dias (ver 8.7).
 
-**Planilha vazia** significa que não houve vaga nova desde a última execução.
-Não é falha.
+**Abriu o controle em vez da planilha do dia?** Não houve vaga nova acima da
+nota mínima desde a última execução. Não é falha: o registro mostra quantas
+vagas novas chegaram e ficaram abaixo da nota.
 
 ### 6.1 Rotina semanal (PDCA)
 
@@ -425,12 +427,12 @@ Diante de qualquer suspeita de falha, nesta ordem:
 | `Nao consegui conectar ao Gmail` | Sem internet ou porta 993 bloqueada | Verificar rede e firewall |
 | `0 e-mail(s) encontrado(s)` | Alertas não chegaram ou vão para outro endereço | Ver 9.4 |
 | `0 link(s) de vaga` com e-mails presentes | Formato dos e-mails mudou | Rodar `inspecionar.py --salvar N --anonimizar` e solicitar ajuste do código |
-| Planilha do dia em branco | Nenhuma vaga nova — comportamento correto | Nenhuma. Usar `--refazer` para conferir |
+| Abriu o controle em vez da planilha do dia | Nenhuma vaga nova atingiu a nota mínima — comportamento correto | Nenhuma. Para ver as notas: `python agente_vagas.py --debug` |
 | Vaga irrelevante com nota alta | Palavra-chave casando indevidamente | Ajustar listas conforme 8.1 |
 | Vaga irrelevante marcada "IA" | A IA aprovou um título fora do perfil | Desligar com `ia_titulos = nao` (8.5) |
 | `[aviso] A IA nao respondeu` | Gemini fora do ar ou limite gratuito | Nenhuma. O agente seguiu só com as palavras-chave |
 | `[aviso] Controle ... aberto no Excel` | Controle aberto na hora da execução | Fechar o arquivo. Ele é atualizado na próxima execução, sem perda |
-| Tarefa não executa às 9h | PC desligado ou configuração do Agendador | Ver 9.5 |
+| Tarefa não executa às 9h | PC desligado ou em suspensão às 9h: roda quando o PC é ligado | Normal. Para rodar às 9h com o PC em suspensão, ver 9.5 |
 | `PermissionError` ao gerar a planilha | Planilha aberta no Excel | O programa salva com outro nome automaticamente |
 | Execução trava sem mensagem | Conexão com o Gmail sem resposta | Encerrar com `Ctrl+C`. Há tempo limite de 45s |
 | Correção aplicada não surtiu efeito | Arquivo antigo ainda em uso | Conferir a versão na primeira linha (ver 5.5) |
@@ -470,10 +472,14 @@ Perder a senha é normal — ela é descartável.
 3. Botão direito → **Executar** para testar imediatamente
 4. Conferir se as configurações da seção 5.3 continuam aplicadas
 5. Testar o `.bat` isoladamente com dois cliques em `rodar_agente.bat`
+6. Com o PC desligado às 9h, a execução acontece quando ele é ligado
+   (opção "executar após inicialização perdida"). Para rodar às 9h com o PC
+   em suspensão, marcar na aba Condições: "Ativar o computador para executar
+   esta tarefa"
 
 ### 9.6 Voltar para a versão anterior (1.4)
 
-Se a versão 1.5.2 apresentar um problema que impeça o uso:
+Se a versão 1.5.3 apresentar um problema que impeça o uso:
 
 1. Abrir `C:\AgenteVagas\backup_v1.4`
 2. Copiar `agente_vagas.py`, `diagnostico.py` e `inspecionar.py` para
@@ -535,7 +541,7 @@ módulos novos e o controle. O `config.txt` e o histórico servem para as duas.
 |---|---|---|
 | 1.0 | ago/2026 | Emissão inicial. Agente em operação, com agendamento diário às 9h. |
 | 1.1 | ago/2026 | Atualizado após a primeira calibragem com dados reais (110 vagas). Inclui as listas de palavras-chave vigentes, a referência de nota mínima, a verificação de versão do programa e cinco falhas novas na seção 9.2. Programa na versão 1.4. |
-| 1.2 | out/2026 | Programa na versão 1.5.2: palavras-chave em arquivo próprio, segunda opinião da IA, controle de candidaturas com indicadores, testes automáticos e código reorganizado em módulos. Novas seções 5.6, 6.1, 8.5, 8.6, 8.7, 8.8 e 9.6; tabela 9.2 e limitações atualizadas. |
+| 1.2 | out/2026 | Programa na versão 1.5.3: palavras-chave em arquivo próprio, segunda opinião da IA, controle de candidaturas com indicadores, testes automáticos e código reorganizado em módulos. Novas seções 5.6, 6.1, 8.5, 8.6, 8.7, 8.8 e 9.6; tabela 9.2 e limitações atualizadas. |
 
 ---
 
@@ -571,6 +577,7 @@ Mantido como referência para futuras manutenções.
 | Código antigo do Catho e do Outlook dificultava a manutenção | Removido; código separado em módulos com uma função cada |
 | Mudança no layout dos e-mails só era percebida com o relatório vazio | Testes automáticos com e-mail de exemplo, rodando no GitHub a cada atualização |
 | Arquivos de teste, cópias e planilhas antigas acumulavam na pasta de saída | Arrumação automática: o que não é mais necessário vai para `PODE_APAGAR` (8.7) |
+| Sem vaga acima da nota, nada abria na tela e parecia que o agente não tinha rodado | Abre o controle de candidaturas e o registro explica quantas vagas ficaram abaixo da nota |
 | No primeiro teste da v1.5, a IA aprovou consultorias de ERP (SAP, TOTVS, NetSuite) e controle de qualidade de produção | Instrução da IA reescrita com o perfil do candidato, regras de exclusão e exemplos reais de aprovação e recusa |
 | A mesma vaga aparecia várias vezes, publicada com números diferentes (88 repetições no histórico) | Anúncio com mesmo cargo e empresa dos últimos 30 dias é tratado como repetido |
 | Em parte dos alertas, o título engolia empresa e local, e a empresa ficava vazia (20 vagas no histórico) | Título separado pelos blocos internos do link; salário e selos retirados do local |
